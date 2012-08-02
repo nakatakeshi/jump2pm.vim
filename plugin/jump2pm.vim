@@ -49,6 +49,10 @@
 " noremap ff :call Jump2pm('e')<ENTER>
 " " split window horizontal, and ...
 " noremap fd :call Jump2pm('sp')<ENTER>
+" " open tab, and ...
+" noremap fd :call Jump2pm('tabe')<ENTER>
+" " for visual mode, use Jump2pmV()
+" vnoremap fg :call Jump2pmV('vne')<ENTER>
 " ---------------------------------------
 " * you can change the shortcut key 'fg' and so on as you like.
 " 
@@ -103,11 +107,19 @@ autocmd FileType perl,yaml set isfname+=\>
 autocmd FileType perl,yaml set includeexpr=Jump2pm('gf')
 
 function! Jump2pm(cmd)
+  call s:Jump_with_pm_path(a:cmd, expand("<cfile>"))
+endfunction
+
+function! Jump2pmV(cmd)
+  call s:Jump_with_pm_path(a:cmd, getline("'<")[getpos("'<")[2]-1:getpos("'>")[2]-1])
+endfunction
+
+function! s:Jump_with_pm_path(cmd, pm)
 
   let l:wrapscan_flag = &wrapscan
   let l:cur_lib_path  = s:Get_current_lib_path()
 
-  let l:pm_path  = substitute(expand("<cfile>"),'::','/','g')
+  let l:pm_path = substitute(a:pm,'::','/','g')
   let l:method = ''
   " if include cfile string -> 
   if l:pm_path =~ '->'
