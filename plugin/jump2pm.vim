@@ -118,7 +118,6 @@ function! s:Jump_with_pm_path(cmd, pm)
 
   let l:wrapscan_flag = &wrapscan
   let l:cur_lib_path  = s:Get_current_lib_path()
-
   let l:pm_path = substitute(a:pm,'::','/','g')
   let l:method = ''
   " if include cfile string -> 
@@ -131,7 +130,7 @@ function! s:Jump_with_pm_path(cmd, pm)
   let l:pm_path  = substitute(pm_path,'$','.pm','')
 
   let l:path     = &l:path
-  if l:cur_lib_path != ['']
+  if l:cur_lib_path != []
     let l:path = l:path . ',' . join(l:cur_lib_path, ',')
   endif
 
@@ -207,23 +206,25 @@ function! s:Get_current_lib_path()
   else
     let s:search_lib_dir = [ 'lib' , 'inc' ]
   endif
-
+  let l:lib_path_list = []
   while 1
     if l:cur_file == ''
-      return
+      return l:lib_path_list
     endif
     for i in range(0,len(s:search_lib_dir)-1)
       let l:cur_file = substitute(substitute(cur_file,'/[^(/)]*$','','g'),'$','/' . s:search_lib_dir[i] ,'g')
       " escape t/lib dir
       if l:cur_file =~ '/t/lib$'
-        return [substitute(cur_file,'/t/lib$','/lib','g'), substitute(cur_file,'/t/lib$','/t/inc','g')]
+        call add(l:lib_path_list, substitute(cur_file,'/t/lib$','/lib','g'), substitute(cur_file,'/t/lib$','/t/inc','g'))
+        continue
       endif
       if isdirectory(cur_file)
-        return [l:cur_file]
+        call add(l:lib_path_list, l:cur_file)
+        continue
       endif
     endfor
     let l:cur_file = substitute(cur_file,'/[^(/)]*$','','g')
   endwhile
-  return ['']
+  return l:lib_path_list
 endfunction
 
