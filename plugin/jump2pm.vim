@@ -215,7 +215,8 @@ function! s:Get_current_lib_path()
       let l:cur_file = substitute(substitute(cur_file,'/[^(/)]*$','','g'),'$','/' . s:search_lib_dir[i] ,'g')
       " escape t/lib dir
       if l:cur_file =~ '/t/lib$'
-        call add(l:lib_path_list, substitute(cur_file,'/t/lib$','/lib','g'), substitute(cur_file,'/t/lib$','/t/inc','g'))
+        call add(l:lib_path_list, substitute(cur_file,'/t/lib$','/lib','g'))
+        call add(l:lib_path_list, substitute(cur_file,'/t/lib$','/t/inc','g'))
         continue
       endif
       if isdirectory(cur_file)
