@@ -90,21 +90,24 @@ if exists('perl_jump_to_pm')
   finish
 endif
 let perl_jump_to_pm = 1
+let s:save_cpo = &cpo
+set cpo&vim
 
-" activate filetype plugin 
-:filetype plugin on
+" activate filetype plugin
 " add path
 "do not judge [$&/] as part of filename when cmd called
-autocmd FileType perl,yaml set isfname-=$
-autocmd FileType perl,yaml set isfname-=&
-autocmd FileType perl,yaml set isfname-=/
-autocmd FileType perl,yaml set isfname-=+
-"judge > as part of filename when cmd called
-autocmd FileType perl,yaml set isfname+=\>
+augroup perl_jump_to_pm
+  autocmd! FileType perl,yaml setl isfname-=$
+  autocmd! FileType perl,yaml setl isfname-=&
+  autocmd! FileType perl,yaml setl isfname-=/
+  autocmd! FileType perl,yaml setl isfname-=+
+  "judge > as part of filename when cmd called
+  autocmd! FileType perl,yaml setl isfname+=\>
 
-" overload perl.vim
-" hook when gf called and can't find file from path and cfile
-autocmd FileType perl,yaml set includeexpr=Jump2pm('gf')
+  " overload perl.vim
+  " hook when gf called and can't find file from path and cfile
+  autocmd! FileType perl,yaml setl includeexpr=Jump2pm('gf')
+augroup END
 
 function! Jump2pm(cmd)
   call s:Jump_with_pm_path(a:cmd, expand("<cfile>"))
@@ -229,3 +232,5 @@ function! s:Get_current_lib_path()
   return l:lib_path_list
 endfunction
 
+let &cpo = s:save_cpo
+unlet s:save_cpo
