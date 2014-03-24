@@ -97,16 +97,19 @@ set cpo&vim
 " add path
 "do not judge [$&/] as part of filename when cmd called
 augroup perl_jump_to_pm
-  autocmd! FileType perl,yaml setl isfname-=$
-  autocmd! FileType perl,yaml setl isfname-=&
-  autocmd! FileType perl,yaml setl isfname-=/
-  autocmd! FileType perl,yaml setl isfname-=+
+  autocmd!
+augroup END
+augroup perl_jump_to_pm
+  autocmd FileType perl,yaml setl isfname-=$
+  autocmd FileType perl,yaml setl isfname-=&
+  autocmd FileType perl,yaml setl isfname-=/
+  autocmd FileType perl,yaml setl isfname-=+
   "judge > as part of filename when cmd called
-  autocmd! FileType perl,yaml setl isfname+=\>
+  autocmd FileType perl,yaml setl isfname+=\>
 
   " overload perl.vim
   " hook when gf called and can't find file from path and cfile
-  autocmd! FileType perl,yaml setl includeexpr=Jump2pm('gf')
+  autocmd FileType perl,yaml setl includeexpr=Jump2pm('gf')
 augroup END
 
 function! Jump2pm(cmd)
